@@ -6,19 +6,20 @@
 }
 
 body {
-    background-color: #f5f5f5;
+    background-color: #2e2d2d; /* Cor de fundo cinza */
 }
 
 header {
+    background: linear-gradient(to right, #000000, #FFA500); /* Degradê de preto para laranja */
+    color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
-    background: linear-gradient(to right, #000000, #FFD700); /* Degradê de preto para amarelo */
-    color: white;
+    padding: 1.5rem 2.5rem; /* Aumentado */
     position: sticky;
     top: 0;
     z-index: 100;
+    font-family: 'Poppins', sans-serif; /* Fonte estilizada */
 }
 
 .logo h1 {
@@ -41,8 +42,9 @@ header {
 .menu ul li a {
     text-decoration: none;
     color: white;
-    font-size: 1rem;
+    font-size: 1.2rem; /* Aumentado */
     transition: color 0.3s ease;
+    font-family: 'Poppins', sans-serif; /* Fonte estilizada */
 }
 
 .menu ul li a:hover {
@@ -101,7 +103,7 @@ main {
 }
 
 button {
-    background-color: #2ecc71;
+    background-color: #FFA500; /* Cor laranja */
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -112,7 +114,7 @@ button {
 }
 
 button:hover {
-    background-color: #27ae60;
+    background-color: #FF8C00; /* Laranja mais escuro ao passar o mouse */
 }
 
 /* Modal Styles */
@@ -136,6 +138,8 @@ button:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     min-width: 300px;
+    max-width: 500px;
+    text-align: center;
 }
 
 .close {
@@ -144,6 +148,7 @@ button:hover {
     top: 0.5rem;
     font-size: 1.5rem;
     cursor: pointer;
+    color: #333;
 }
 
 .quantity-selector {
@@ -166,7 +171,7 @@ quantity-selector input {
     position: fixed;
     right: 0;
     top: 0;
-    width: 300px;
+    width: 400px; /* Aumentado */
     height: 100%;
     background-color: #fff;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
@@ -299,7 +304,7 @@ footer {
     visibility: hidden;
     min-width: 250px;
     margin-left: -125px;
-    background-color: #333;
+    background-color: #3a3737;
     color: #fff;
     text-align: center;
     border-radius: 5px;
@@ -316,4 +321,56 @@ footer {
 .toast.show {
     visibility: visible;
     opacity: 1;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 300px;
+    max-width: 500px;
+    text-align: center;
+}
+
+.modal-content h2 {
+    margin-bottom: 1rem;
+}
+
+.modal-content p {
+    margin: 0.5rem 0;
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 0.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+}
+
+#about-modal .modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 300px;
+    max-width: 500px;
+    text-align: center;
+}
+
+#about-modal .close {
+    position: absolute;
+    right: 1rem;
+    top: 0.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
 }

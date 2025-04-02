@@ -121,6 +121,19 @@ function removeFromCart(productId) {
     updateCartDisplay();
 }
 
+function removeSingleItemFromCart(productName) {
+    const product = cart.find(item => item.name === productName);
+    if (product) {
+        product.quantity -= 1;
+        if (product.quantity <= 0) {
+            cart = cart.filter(item => item.name !== productName);
+        }
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    updateCartUI();
+}
+
 function toggleCart() {
     const cartPanel = document.getElementById('shopping-cart');
     // Alternar a visibilidade do carrinho
