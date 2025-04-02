@@ -165,7 +165,7 @@ function updateCartUI() {
 
     // Atualizar os itens do carrinho
     let total = 0;
-    cart.forEach(item => {
+    cart.forEach((item, index) => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
 
@@ -179,6 +179,18 @@ function updateCartUI() {
                 <p>Preço: R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</p>
             </div>
         `;
+
+        // Adicionar botão de remover
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remover';
+        removeButton.className = 'remove-item';
+        removeButton.onclick = () => {
+            cart.splice(index, 1); // Remove o item do array
+            updateCartUI(); // Atualiza o carrinho
+            updateCartCount(); // Atualiza o contador
+        };
+
+        cartItem.appendChild(removeButton);
         cartItemsContainer.appendChild(cartItem);
     });
 
@@ -254,3 +266,38 @@ function showToast(message) {
         toast.className = 'toast';
     }, 3000);
 }
+
+const cartItems = [
+    { id: 1, name: 'Item 1', price: 10 },
+    { id: 2, name: 'Item 2', price: 20 },
+    { id: 3, name: 'Item 3', price: 30 },
+];
+
+function renderCart() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    cartItemsContainer.innerHTML = ''; // Limpa os itens existentes
+
+    cartItems.forEach(item => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${item.name} - R$${item.price}`;
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remover';
+        removeButton.className = 'remove-item';
+        removeButton.onclick = () => removeItem(item.id);
+
+        listItem.appendChild(removeButton);
+        cartItemsContainer.appendChild(listItem);
+    });
+}
+
+function removeItem(itemId) {
+    const itemIndex = cartItems.findIndex(item => item.id === itemId);
+    if (itemIndex !== -1) {
+        cartItems.splice(itemIndex, 1); // Remove o item do array
+        renderCart(); // Re-renderiza o carrinho
+    }
+}
+
+// Inicializa o carrinho
+renderCart();
