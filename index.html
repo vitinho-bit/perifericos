@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>eletronicos</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         .remove-item-btn {
             background-color: #ff4d4d;
@@ -33,20 +33,89 @@
             flex-grow: 1;
             margin-left: 10px;
         }
+
+        .ad-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .ad-popup-content {
+            text-align: center;
+        }
+
+        .ad-popup .close {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .search-bar {
+            margin-left: auto;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            padding: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            margin-right: 10px;
+            padding: 5px;
+            font-size: 16px;
+            border: none;
+            background-color: #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #bbb;
+        }
     </style>
 </head>
+
 <body>
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <h2>Login</h2>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <label for="username">Usuário:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <button onclick="skipLogin()" style="margin-top: 1rem;">Pular por enquanto</button>
+        </div>
+    </div>
+
     <header>
         <div class="logo">
-            <h1>Eletro-Shop</h1>
+            <h1>Tech-Place</h1>
         </div>
         <nav class="menu">
             <ul>
-                <li><a href="#products">Produtos</a></li>
-                <li><a href="#about" onclick="openAboutModal()">Sobre</a></li>
-                <li><a href="#contact" onclick="openContactModal()">Contato</a></li>
+                <!-- Removed "Produtos" button -->
             </ul>
         </nav>
+        <div class="search-bar">
+            <button id="theme-toggle" onclick="toggleTheme()">⚪</button>
+            <input type="text" id="search-input" placeholder="Pesquisar produtos..." oninput="filterProducts()">
+        </div>
         <div class="cart-icon" onclick="toggleCart()">
             <i class="fas fa-shopping-cart"></i>
             <span id="cart-count">0</span>
@@ -54,137 +123,194 @@
     </header>
 
     <main>
-        <section class="products">
+        <section class="products" id="products-container">
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Mountain E-Bike">
-                <h3>Mountain E-Bike Pro</h3>
-                <p class="price">R$ 12.999,00</p>
-                <p class="description">Bike elétrica ideal para trilhas e montanhas, com bateria de longa duração.</p>
-                <button onclick="openModal(1, 'Mountain E-Bike Pro', 12999.00, 'Bike elétrica ideal para trilhas e montanhas, com bateria de longa duração.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/placa-de-video-rtx-5090-aorus-master-32g-gigabyte-nvidia-geforce-32gb-gddr7-512bits-rgb-dlss-ray-tracing-gv-n5090aorus-m-32gd_1738242980_g.webp"
+                    alt="RTX 5090 AORUS">
+                <h3>RTX 5090 AORUS</h3>
+                <p class="price">R$ 26.999,00</p>
+                <p class="description">RTX 5090 AORUS, O mais alto desempenho para aqueles que buscam FPS maximo e jogos
+                    em 4k</p>
+                <button
+                    onclick="openModal(1, 'RTX 5090 AORUS.', 26999.00, 'Placa de video, com alto desempenho.', 'imagens/placa-de-video-rtx-5090-aorus-master-32g-gigabyte-nvidia-geforce-32gb-gddr7-512bits-rgb-dlss-ray-tracing-gv-n5090aorus-m-32gd_1738242980_g.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
 
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Urban E-Bike">
-                <h3>Urban E-Bike Comfort</h3>
-                <p class="price">R$ 8.999,00</p>
-                <p class="description">Perfeita para mobilidade urbana, design moderno e confortável.</p>
-                <button onclick="openModal(2, 'Urban E-Bike Comfort', 8999.00, 'Perfeita para mobilidade urbana, design moderno e confortável.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/Placa-de-V-deo-Galax-NVIDIA-GeForce-RTX-3070-8GB-RAM-LHR-1-Click-OC-37NSL6MD2KCH_1729876539_g.webp"
+                    alt="RTX 3070, Galax EX, 8GB.">
+                <h3>RTX 3070 Galax EX</h3>
+                <p class="price">R$ 3.500,00</p>
+                <p class="description">Placa de video premium com o preço intermediario aguentando os jogos mais atuais.
+                </p>
+                <button
+                    onclick="openModal(2, 'RTX 3070, Galax EX, 8GB.', 3500.00, 'Placa de video premium com o preço intermediario aguentando os jogos mais atuais.', 'imagens/Placa-de-V-deo-Galax-NVIDIA-GeForce-RTX-3070-8GB-RAM-LHR-1-Click-OC-37NSL6MD2KCH_1729876539_g.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
 
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Sport E-Bike">
-                <h3>Sport E-Bike Speed</h3>
-                <p class="price">R$ 15.999,00</p>
-                <p class="description">Bike elétrica esportiva com alto desempenho e velocidade máxima.</p>
-                <button onclick="openModal(3, 'Sport E-Bike Speed', 15999.00, 'Bike elétrica esportiva com alto desempenho e velocidade máxima.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/placa-video-asrock-radeon-rx-6600-xt-radeonrx6600xtchallengerdoc8gb-u46mpg-L.jpg"
+                    alt="Radeon RX 6600">
+                <h3>Radeon RX 6600</h3>
+                <p class="price">R$ 1.250,00</p>
+                <p class="description">Placa de video com o preço acessivel, aguentando jogos atuais em Full HD. (PLACA
+                    DE VIDEO RECONDICIONADA)</p>
+                <button
+                    onclick="openModal(3, 'Radeon RX 6600', 1250.00, 'Placa de video com o preço acessivel, aguentando jogos atuais em Full HD..', 'imagens/placa-video-asrock-radeon-rx-6600-xt-radeonrx6600xtchallengerdoc8gb-u46mpg-L.jpg')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 1">
-                <h3>Produto 1</h3>
-                <p class="price">R$ 1.999,00</p>
-                <p class="description">Descrição do Produto 1.</p>
-                <button onclick="openModal(4, 'Produto 1', 1999.00, 'Descrição do Produto 1.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/Placa-de-V-deo-Galax-NVIDIA-GeForce-RTX-3070-8GB-RAM-LHR-1-Click-OC-37NSL6MD2KCH_1729876539_g.webp"
+                    alt="Radeon RX 7900">
+                <h3>Radeon RX 7600</h3>
+                <p class="price">R$ 1.800,00</p>
+                <p class="description">Radeon RX 7600 Gaming OC, com alto desempenho com suporte ao ray tracing (a
+                    depender dos jogos...).</p>
+                <button
+                    onclick="openModal(4, 'Radeon RX 7600', 1800.00, 'Radeon RX 7600 Gaming OC, com alto desempenho com suporte ao ray tracing (a depender dos jogos...).', 'imagens/Placa-de-V-deo-Galax-NVIDIA-GeForce-RTX-3070-8GB-RAM-LHR-1-Click-OC-37NSL6MD2KCH_1729876539_g.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 2">
-                <h3>Produto 2</h3>
-                <p class="price">R$ 2.999,00</p>
-                <p class="description">Descrição do Produto 2.</p>
-                <button onclick="openModal(5, 'Produto 2', 2999.00, 'Descrição do Produto 2.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/Mini_31500.jpg" alt="GTX 1660">
+                <h3>GTX 1650</h3>
+                <p class="price">R$ 899</p>
+                <p class="description">GTX 1650, placa de video basica ideal para aqueles que buscam algo super ``
+                    acessivel para rodar jogos leves em full HD.</p>
+                <button
+                    onclick="openModal(5, 'GTX 1650.', 899, 'GTX 1650, placa de video basica ideal para aqueles que buscam algo super acessivel para rodar jogos leves em full HD.', 'imagens/Mini_31500.jpg')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 3">
-                <h3>Produto 3</h3>
-                <p class="price">R$ 3.999,00</p>
-                <p class="description">Descrição do Produto 3.</p>
-                <button onclick="openModal(6, 'Produto 3', 3999.00, 'Descrição do Produto 3.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/Placa-de-V-deo-DEX-NVIDIA-GeForce-GTX-750TI-700-Series-2GB-DDR5-PV-07_1706906952_g.webp"
+                    alt="GeForce Gtx 750 Ti">
+                <h3>Gtx 750 Ti 2gb</h3>
+                <p class="price">R$ 400</p>
+                <p class="description">Gtx 750 Ti, placa de video basica para usos em pcs de escritorio e para jogos
+                    leves e antigos com resolução em Hd.</p>
+                <button
+                    onclick="openModal(6, 'Gtx 750 Ti 2gb', 400, 'Gtx 750 Ti, placa de video basica para usos em pcs de escritorio e para jogos leves e antigos com resolução em Hd.', 'imagens/Placa-de-V-deo-DEX-NVIDIA-GeForce-GTX-750TI-700-Series-2GB-DDR5-PV-07_1706906952_g.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 4">
-                <h3>Produto 4</h3>
-                <p class="price">R$ 4.999,00</p>
-                <p class="description">Descrição do Produto 4.</p>
-                <button onclick="openModal(7, 'Produto 4', 4999.00, 'Descrição do Produto 4.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/ACz790rmae.webp" alt="Placa Mãe Asus ROG MAXIMUS Z790 APEX ENCORE WIFI7">
+                <h3>Placa Mãe Asus ROG MAXIMUS Z790 APEX ENCORE WIFI7</h3>
+                <p class="price">R$ 6.168,00</p>
+                <p class="description">A placa-mãe Asus ROG Maximus Z790 Apex Encore é uma placa mãe premium para KITS
+                    de alto desempenho.</p>
+                <button
+                    onclick="openModal(7, 'Asus ROG MAXIMUS Z790 APEX ENCORE WIFI7', 6168.00, 'A placa-mãe Asus ROG Maximus Z790 Apex Encore é uma placa mãe premium para KITS de alto desempenho.', 'imagens/ACz790rmae.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 5">
-                <h3>Produto 5</h3>
+                <img src="imagens/71i-AhjINuL._AC_UL495_SR435,495_.jpg" alt="Placa Mãe Asus ROG CROSSHAIR X670E HERO">
+                <h3>Placa Mãe Asus ROG CROSSHAIR X670E HERO</h3>
                 <p class="price">R$ 5.999,00</p>
-                <p class="description">Descrição do Produto 5.</p>
-                <button onclick="openModal(8, 'Produto 5', 5999.00, 'Descrição do Produto 5.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <p class="description">Placa Mãe Asus ROG CROSSHAIR X670E HERO é uma placa mãe premium para KITS de alto
+                    desempenho(AMD)</p>
+                <button
+                    onclick="openModal(8, ' Asus ROG CROSSHAIR X670E HERO', 5999.00, 'Placa Mãe Asus ROG CROSSHAIR X670E HERO é uma placa mãe premium para KITS de alto desempenho(AMD).', 'imagens/71i-AhjINuL._AC_UL495_SR435,495_.jpg')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 6">
-                <h3>Produto 6</h3>
-                <p class="price">R$ 6.999,00</p>
-                <p class="description">Descrição do Produto 6.</p>
-                <button onclick="openModal(9, 'Produto 6', 6999.00, 'Descrição do Produto 6.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/placa-mae-gigabyte-aorus-b450-aorus-m-amd-am4-matx-ddr4-49675-01-min.webp"
+                    alt="PLACA-MÃE PLACA-MÃE GIGABYTE B450 GAMING">
+                <h3>PLACA-MÃE PLACA-MÃE GIGABYTE B450 GAMING</h3>
+                <p class="price">R$ 525</p>
+                <p class="description">GIGABYTE B450 GAMING, Placa mãe basica da amd para com suporte a kits basicos e
+                    intermediario.</p>
+                <button
+                    onclick="openModal(9, 'PLACA-MÃE GIGABYTE B450 GAMING', 525, 'GIGABYTE B450 GAMING, Placa mãe basica da amd para com suporte a kits basicos e intermediario.', 'imagens/placa-mae-gigabyte-aorus-b450-aorus-m-amd-am4-matx-ddr4-49675-01-min.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 7">
-                <h3>Produto 7</h3>
-                <p class="price">R$ 7.999,00</p>
-                <p class="description">Descrição do Produto 7.</p>
-                <button onclick="openModal(10, 'Produto 7', 7999.00, 'Descrição do Produto 7.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/D_NQ_NP_698778-MLB45924164224_052021-O.webp"
+                    alt="Placa Mae TGT H310M-T ,Socket LGA 1151, Chipset H310, TGT-H310M-T">
+                <h3>Placa Mae TGT H310M-T ,Socket LGA 1151, Chipset H310.</h3>
+                <p class="price">R$ 325,00</p>
+                <p class="description">Placa mãe Intel basica para uso basico em kits mais leves, suporte a DDR4 e de
+                    9ª/8ª Geração de processadores, Intel I3 e Intel I5 Respectivamentes.</p>
+                <button
+                    onclick="openModal(10, 'Placa Mae TGT H310M-T ,Socket LGA 1151, Chipset H310, TGT-H310M-T', 325.00, 'Placa mãe Intel basica para uso basico em kits mais leves, suporte a DDR4 e de 9ª/8ª Geração de processadores.', 'imagens/D_NQ_NP_698778-MLB45924164224_052021-O.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 8">
-                <h3>Produto 8</h3>
-                <p class="price">R$ 8.999,00</p>
-                <p class="description">Descrição do Produto 8.</p>
-                <button onclick="openModal(11, 'Produto 8', 8999.00, 'Descrição do Produto 8.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/Mem-ria-Kingston-Fury-Beast-RGB-8GB-3200MHz-DDR4-CL16-KF432C16BBA-8_1738866634.webp"
+                    alt="Memória KINGSTON FURY BEAST DIMM DDR4 8GB 3200 MHZ">
+                <h3>Memória KINGSTON FURY BEAST DIMM DDR4 8GB 3200 MHZ</h3>
+                <p class="price">R$ 168,00</p>
+                <p class="description">Memória de 8GB DIMM DDR4 3200Mhz FURY Beast Black 1,35V 1Rx8 288 pinos para
+                    desktop/gamers, Fabricante líder de produtos e acessórios de alta qualidade.</p>
+                <button
+                    onclick="openModal(11, 'MEMÓRIA KINGSTON FURY BEAST DIMM DDR4 8GB 3200 MHZ', 168.00, 'Memória de 8GB DIMM DDR4 3200Mhz FURY Beast Black 1,35V 1Rx8 288 pinos para desktop/gamers.', 'imagens/Mem-ria-Kingston-Fury-Beast-RGB-8GB-3200MHz-DDR4-CL16-KF432C16BBA-8_1738866634.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 9">
-                <h3>Produto 9</h3>
-                <p class="price">R$ 9.999,00</p>
-                <p class="description">Descrição do Produto 9.</p>
-                <button onclick="openModal(12, 'Produto 9', 9999.00, 'Descrição do Produto 9.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/memoria-kingston-fury-beast-rgb-8gb-5600mhz-ddr5-cl40-preto-kf556c40bba-8_1666121253_g.webp"
+                    alt="Memória RAM Kingston Fury Beast RGB, 8GB, 5600MHz, DDR5">
+                <h3>Memória RAM Kingston Fury Beast RGB, 8GB, 5600MHz, DDR5</h3>
+                <p class="price">R$ 290,00</p>
+                <p class="description">Kingston FURY Beast DDR5 RGB1 permite fazer overclock com estilo em plataformas
+                    de jogos de última geração com tecnologia inovadora.</p>
+                <button
+                    onclick="openModal(12, 'Memória RAM Kingston Fury Beast RGB, 8GB, 5600MHz, DDR5', 290.00, 'Kingston FURY Beast DDR5 RGB1 permite fazer overclock com estilo em plataformas de jogos de última geração com tecnologia inovadora.', 'imagens/memoria-kingston-fury-beast-rgb-8gb-5600mhz-ddr5-cl40-preto-kf556c40bba-8_1666121253_g.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 10">
-                <h3>Produto 10</h3>
-                <p class="price">R$ 10.999,00</p>
-                <p class="description">Descrição do Produto 10.</p>
-                <button onclick="openModal(13, 'Produto 10', 10999.00, 'Descrição do Produto 10.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/Water-Cooler-Gamdias-Chione-M4-RGB-240mm-Amd-intel-M4-240-Preto_1741813243.webp"
+                    alt="WATER COOLER GAMDIAS CHIONE E4-240 PRETO">
+                <h3>WATER COOLER GAMDIAS CHIONE E4-240 PRETO</h3>
+                <p class="price">R$ 419,00</p>
+                <p class="description"> Display Digital no bloco para verificar temperatura do processador ou rotação
+                    das fans. (recomenado para PCS high end) Dimensões do radiador: 276 x 120 x 27 mm</p>
+                <button
+                    onclick="openModal(13, 'WATER COOLER GAMDIAS CHIONE E4-240 PRETO', 419.00, ' Display Digital no bloco para verificar temperatura do processador ou rotação das fans. (recomenado para PCS high end)', 'imagens/Water-Cooler-Gamdias-Chione-M4-RGB-240mm-Amd-intel-M4-240-Preto_1741813243.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 11">
-                <h3>Produto 11</h3>
+                <img src="imagens/air-cooler-rise-mode-gamer-g800-180mm-rgb-rm-ac-o8-rgb_1663775985_g.webp"
+                    alt="Air Cooler Rise Mode Gamer G800, RGB, AMD/Intel, 90mm, Preto - RM-AC-O8-RGB">
+                <h3>Air Cooler Rise Mode Gamer G800, RGB, AMD/Intel, 90mm. Preto.</h3>
                 <p class="price">R$ 11.999,00</p>
-                <p class="description">Descrição do Produto 11.</p>
-                <button onclick="openModal(14, 'Produto 11', 11999.00, 'Descrição do Produto 11.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <p class="description">O Air Cooler G800 Rise Mode com um designer elegante e chamativo proporciona um
+                    excelente desempenho ideal para quase todos os tipos de usuarios.</p>
+                <button
+                    onclick="openModal(14, 'Air Cooler Rise Mode Gamer G800, RGB, AMD/Intel, 90mm, Preto - RM-AC-O8-RGB', 70.00, 'O Air Cooler G800 Rise Mode com um designer elegante e chamativo proporciona um excelente desempenho ideal para quase todos os tipos de usuarios..', 'imagens/air-cooler-rise-mode-gamer-g800-180mm-rgb-rm-ac-o8-rgb_1663775985_g.webp')">Adicionar
+                    ao Carrinho</button>
             </div>
             <div class="product-card">
-                <img src="https://placehold.co/300x200" alt="Produto 12">
-                <h3>Produto 12</h3>
-                <p class="price">R$ 12.999,00</p>
-                <p class="description">Descrição do Produto 12.</p>
-                <button onclick="openModal(15, 'Produto 12', 12999.00, 'Descrição do Produto 12.', 'https://placehold.co/300x200')">Adicionar ao Carrinho</button>
+                <img src="imagens/a952caf98781c296011ee46ec5a5d9a6e9f31508_0-320x320w.jpg"
+                    alt="SSD Kingston A400, 480GB, SATA III, 2.5">
+                <h3>SSD Kingston A400, 480GB, SATA III, 2.5</h3>
+                <p class="price">R$ 254,99</p>
+                <p class="description">A unidade de estado sólido A400 da Kingston aumenta drasticamente o carregamento
+                    e transferência, comparados a discos rígidos mecânicos (HD).</p>
+                <button
+                    onclick="openModal(15, 'SSD Kingston A400, 480GB, SATA III, 2.5', 254.99, 'A unidade de estado sólido A400 da Kingston aumenta drasticamente o carregamento e transferência, comparados a discos rígidos mecânicos (HD)', 'imagens/a952caf98781c296011ee46ec5a5d9a6e9f31508_0-320x320w.jpg')">Adicionar
+                    ao Carrinho</button>
             </div>
         </section>
 
         <!-- Modal de quantidade -->
-<div id="quantity-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <div class="modal-product-details">
-            <img id="modal-product-image" src="" alt="Produto" class="modal-product-image">
-            <div class="modal-product-info">
-                <h2 id="modal-product-name">Nome do Produto</h2>
-                <p id="modal-product-description">Descrição do Produto</p>
-                <p class="price">R$ <span id="modal-product-price">0,00</span></p>
+        <div id="quantity-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div class="modal-product-details">
+                    <img id="modal-product-image" src="" alt="Produto" class="modal-product-image">
+                    <div class="modal-product-info">
+                        <h2 id="modal-product-name">Nome do Produto</h2>
+                        <p id="modal-product-description">Descrição do Produto</p>
+                        <p class="price">R$ <span id="modal-product-price">0,00</span></p>
+                    </div>
+                </div>
+                <h3>Selecione a Quantidade</h3>
+                <div class="quantity-selector">
+                    <button onclick="decrementQuantity()">-</button>
+                    <input type="number" id="quantity" value="1" min="1" max="10">
+                    <button onclick="incrementQuantity()">+</button>
+                </div>
+                <button onclick="addToCart()">Confirmar</button>
             </div>
         </div>
-        <h3>Selecione a Quantidade</h3>
-        <div class="quantity-selector">
-            <button onclick="decrementQuantity()">-</button>
-            <input type="number" id="quantity" value="1" min="1" max="10">
-            <button onclick="incrementQuantity()">+</button>
-        </div>
-        <button onclick="addToCart()">Confirmar</button>
-    </div>
-</div>
 
         <!-- Carrinho de Compras -->
         <div id="shopping-cart" class="cart-panel">
@@ -208,29 +334,89 @@
                 <div class="payment-total">
                     <h3>Total: R$ <span id="payment-total">0,00</span></h3>
                 </div>
+                <div class="coupon-section">
+                    <input type="text" id="coupon-code" placeholder="Digite seu cupom de desconto">
+                    <button onclick="applyCoupon()">Aplicar Cupom</button>
+                    <p id="coupon-message" style="color: green; display: none;">Cupom aplicado com sucesso!</p>
+                </div>
                 <button onclick="proceedToPayment()">Ir para Pagamento</button>
             </div>
         </div>
 
-        <!-- Modal de Contato -->
+        <!-- Modal de Políticas de Privacidade -->
+        <div id="privacy-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closePrivacyModal()">&times;</span>
+                <h2>Política de Privacidade</h2>
+                <p>Sua privacidade é importante para nós. Coletamos apenas as informações necessárias para processar
+                    seus pedidos e melhorar sua experiência de compra.</p>
+                <p>Garantimos que seus dados pessoais não serão compartilhados com terceiros sem sua autorização, exceto
+                    quando exigido por lei.</p>
+                <p>Para mais informações, entre em contato conosco através do nosso canal de atendimento.</p>
+            </div>
+        </div>
+
+        <!-- Modal de Termos de Uso -->
+        <div id="terms-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeTermsModal()">&times;</span>
+                <h2>Termos de Uso</h2>
+                <p>Ao utilizar nossa loja virtual, você concorda com os seguintes termos:</p>
+                <ul>
+                    <li>Os preços e a disponibilidade dos produtos estão sujeitos a alterações sem aviso prévio.</li>
+                    <li>É proibido o uso indevido do site, incluindo tentativas de acessar áreas restritas ou realizar
+                        fraudes.</li>
+                    <li>Garantimos a segurança dos seus dados, mas não nos responsabilizamos por falhas de terceiros.
+                    </li>
+                    <li>Ao realizar uma compra, você concorda com nossas políticas de privacidade e condições de
+                        pagamento.</li>
+                </ul>
+                <p>Nosso site é destinado exclusivamente para uso pessoal e não comercial. Qualquer reprodução,
+                    distribuição ou modificação do conteúdo sem autorização prévia é estritamente proibida.</p>
+                <p>Reservamo-nos o direito de suspender ou encerrar o acesso de usuários que violem os termos
+                    estabelecidos, sem aviso prévio.</p>
+                <p>Para mais informações ou dúvidas, entre em contato com nossa equipe de suporte através dos canais
+                    disponíveis na seção de contato.</p>
+            </div>
+        </div>
+
+        <!-- Modal Sobre Nós -->
+        <div id="about-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAboutModal()">&times;</span>
+                <h2>Sobre Nós</h2>
+                <p>Bem-vindo à Eletro-Shop, sua loja de confiança para a compra de eletrônicos de alta qualidade!</p>
+                <p>Oferecemos uma ampla gama de produtos, incluindo smartphones, laptops, acessórios e muito mais,
+                    sempre com preços competitivos e garantia de satisfação.</p>
+                <p>Nosso compromisso é proporcionar uma experiência de compra excepcional, com atendimento ao cliente
+                    dedicado e entrega rápida.</p>
+                <p>Na Eletro-Shop, acreditamos em inovação, qualidade e confiança. Estamos aqui para atender todas as
+                    suas necessidades tecnológicas.</p>
+            </div>
+        </div>
+
+        <!-- Modal Contato -->
         <div id="contact-modal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeContactModal()">&times;</span>
                 <h2>Contato</h2>
-                <p><strong>Telefone:</strong> (11) 1234-5678</p>
-                <p><strong>Email:</strong> contato@eletroshop.com</p>
-                <p><strong>Endereço:</strong> Rua das Lojas, 123 - São Paulo, SP</p>
+                <p>Entre em contato conosco para dúvidas, suporte ou informações adicionais:</p>
+                <ul>
+                    <li><strong>Telefone:</strong> (11) 9876-5432</li>
+                    <li><strong>Email:</strong> suporte@lojavirtual.com</li>
+                    <li><strong>Endereço:</strong> Avenida Principal, 456 - Centro, São Paulo, SP</li>
+                    <li><strong>Horário de Atendimento:</strong> Segunda a Sexta, das 9h às 18h</li>
+                </ul>
+                <p>Estamos à disposição para ajudar você!</p>
             </div>
         </div>
 
-        <!-- Modal Sobre -->
-        <div id="about-modal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeAboutModal()">&times;</span>
-                <h2>Sobre a Loja</h2>
-                <p>Bem-vindo à nossa loja virtual de peças de computador! Aqui você encontra uma ampla variedade de componentes de alta qualidade para montar ou atualizar seu PC.</p>
-                <p>Oferecemos produtos como placas-mãe, processadores, memórias RAM, placas de vídeo e muito mais, sempre com os melhores preços e garantia de satisfação.</p>
-                <p>Nosso objetivo é proporcionar a melhor experiência de compra para entusiastas e profissionais de tecnologia.</p>
+        <!-- Popup de Propaganda -->
+        <div id="ad-popup" class="ad-popup">
+            <div class="ad-popup-content">
+                <span class="close" onclick="closeAdPopup()">&times;</span>
+                <h2>Promoção Especial!</h2>
+                <p>Compre agora e ganhe 10% de desconto em sua primeira compra!</p>
             </div>
         </div>
 
@@ -238,76 +424,28 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 Eletro-Shop. Todos os direitos reservados.</p>
+        <p>&copy; 2025 Tech-Place. Todos os direitos reservados.</p>
+        <div class="footer-links"> <!-- Links rede sociais -->
+            <a href="#about" onclick="openAboutModal()">Sobre Nós</a>
+            <a href="#contact" onclick="openContactModal()">Contato</a>
+            <a href="#terms" onclick="openTermsModal()">Termos de Uso</a>
+            <a href="#privacy" onclick="openPrivacyModal()">Política de Privacidade</a>
+        </div>
+        <div class="social-icons">
+            <div class="social-icons">
+                <a href="https://www.facebook.com/share/1EPPgDLqU3/" target="_blank"><i
+                        class="fab fa-facebook-f"></i></a>
+                <a href="https://x.com/xViitorz?t=gb3dLjhXD3HDxhPVYUlgLA&s=09" target="_blank"><i
+                        class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/xviitorz?igsh=cHV5czF5Z3J0NTcz" target="_blank"><i
+                        class="fab fa-instagram"></i></a>
+                <a href="https://www.linkedin.com/in/victor-manoel-dos-santos-paz-2a2a57333/" target="_blank"><i
+                        class="fab fa-linkedin-in"></i></a>
+            </div>
     </footer>
 
     <script src="script.js"></script>
-    <script>
-        function updateCartUI() {
-            const cartItemsContainer = document.getElementById('cart-items');
-            const cartTotalElement = document.getElementById('cart-total');
 
-            // Limpar o conteúdo atual do carrinho
-            cartItemsContainer.innerHTML = '';
-
-            // Atualizar os itens do carrinho
-            let total = 0;
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
-
-                const cartItem = document.createElement('div');
-                cartItem.classList.add('cart-item');
-                cartItem.innerHTML = `
-                    <img src="${item.image}" alt="${item.name}" class="cart-item-image" width="50">
-                    <div class="cart-item-details">
-                        <h4>${item.name}</h4>
-                        <p>Quantidade: ${item.quantity}</p>
-                        <p>Subtotal: R$ ${itemTotal.toFixed(2).replace('.', ',')}</p>
-                    </div>
-                    <button class="remove-item-btn" onclick="removeSingleItemFromCart('${item.name}')">Remover 1</button>
-                `;
-                cartItemsContainer.appendChild(cartItem);
-            });
-
-            // Atualizar o total do carrinho
-            cartTotalElement.textContent = total.toFixed(2).replace('.', ',');
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1); // Remove o item pelo índice
-            updateCartUI();
-            updateCartCount();
-        }
-
-        function openContactModal() {
-            document.getElementById('contact-modal').style.display = 'block';
-        }
-
-        function closeContactModal() {
-            document.getElementById('contact-modal').style.display = 'none';
-        }
-
-        function openAboutModal() {
-            document.getElementById('about-modal').style.display = 'block';
-        }
-
-        function closeAboutModal() {
-            document.getElementById('about-modal').style.display = 'none';
-        }
-
-        // Fechar o modal ao clicar fora dele
-        window.onclick = function(event) {
-            const modal = document.getElementById('contact-modal');
-            if (event.target == modal) {
-                closeContactModal();
-            }
-
-            const aboutModal = document.getElementById('about-modal');
-            if (event.target == aboutModal) {
-                closeAboutModal();
-            }
-        }
-    </script>
 </body>
+
 </html>

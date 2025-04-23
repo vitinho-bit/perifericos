@@ -2,6 +2,7 @@
 let currentProduct = null;
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 updateCartCount();
+let discount = 0;
 
 // Funções do Modal
 function openModal(productId, productName, productPrice, productDescription, productImage) {
@@ -19,16 +20,12 @@ function closeModal() {
     document.getElementById('quantity-modal').style.display = 'none';
 }
 function proceedToPayment() {
-    showToast('Redirecionando para a página de pagamento...');
-    // Aqui você pode adicionar lógica para redirecionar para a página de pagamento real
     closePaymentModal();
 }
 
 function incrementQuantity() {
     const input = document.getElementById('quantity');
-    if (input.value < 10) {
-        input.value = parseInt(input.value) + 1;
-    }
+    input.value = parseInt(input.value) + 1; // Removido o limite de 10
 }
 
 function decrementQuantity() {
@@ -45,6 +42,13 @@ function addToCart() {
     const productPrice = parseFloat(document.getElementById('modal-product-price').textContent.replace(',', '.'));
     const productQuantity = parseInt(document.getElementById('quantity').value, 10);
     const productImage = document.getElementById('modal-product-image').src;
+
+    // Verificar o limite de 20 itens no carrinho
+    const totalItemsInCart = cart.reduce((sum, item) => sum + item.quantity, 0);
+    if (totalItemsInCart + productQuantity > 20) {
+        alert('Você atingiu o limite máximo de 20 itens no carrinho.');
+        return;
+    }
 
     // Verificar se o produto já está no carrinho
     const existingProduct = cart.find(item => item.name === productName);
@@ -91,7 +95,7 @@ function formatPrice(price) {
 function updateCartDisplay() {
     const cartItems = document.getElementById('cart-items');
     const cartTotal = document.getElementById('cart-total');
-    
+
     cartItems.innerHTML = '';
     let total = 0;
 
@@ -136,7 +140,7 @@ function removeSingleItemFromCart(productName) {
 
 function toggleCart() {
     const cartPanel = document.getElementById('shopping-cart');
-    // Alternar a visibilidade do carrinho
+
     if (cartPanel.style.display === 'block') {
         cartPanel.style.display = 'none';
     } else {
@@ -144,27 +148,26 @@ function toggleCart() {
     }
 }
 
-// Fechar o carrinho quando clicar fora dele
+
 document.addEventListener('click', (e) => {
     const cartPanel = document.getElementById('shopping-cart');
     const cartIcon = document.querySelector('.cart-icon');
-    
-    if (cartPanel.classList.contains('active') && 
-        !cartPanel.contains(e.target) && 
+
+    if (cartPanel.classList.contains('active') &&
+        !cartPanel.contains(e.target) &&
         !cartIcon.contains(e.target)) {
         cartPanel.classList.remove('active');
     }
 });
 
-// Fechar o modal quando clicar fora dele
-window.onclick = function(event) {
+window.onclick = function (event) {
     const modal = document.getElementById('quantity-modal');
     if (event.target == modal) {
         closeModal();
     }
 }
 
-// Inicializar o carrinho ao carregar a página
+
 document.addEventListener('DOMContentLoaded', () => {
     updateCartDisplay();
 });
@@ -173,12 +176,10 @@ function updateCartUI() {
     const cartItemsContainer = document.getElementById('cart-items');
     const cartTotalElement = document.getElementById('cart-total');
 
-    // Limpar o conteúdo atual do carrinho
     cartItemsContainer.innerHTML = '';
 
-    // Atualizar os itens do carrinho
     let total = 0;
-    cart.forEach(item => {
+    cart.forEach((item, index) => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
 
@@ -192,10 +193,22 @@ function updateCartUI() {
                 <p>Preço: R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</p>
             </div>
         `;
+
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remover';
+        removeButton.className = 'remove-item';
+        removeButton.onclick = () => {
+            cart.splice(index, 1);
+            updateCartUI();
+            updateCartCount();
+        };
+
+        cartItem.appendChild(removeButton);
         cartItemsContainer.appendChild(cartItem);
     });
 
-    // Atualizar o total do carrinho
+
     cartTotalElement.textContent = total.toFixed(2).replace('.', ',');
 }
 
@@ -214,10 +227,10 @@ function openPaymentModal() {
     const paymentItemsContainer = document.getElementById('payment-items');
     const paymentTotalElement = document.getElementById('payment-total');
 
-    // Limpar o conteúdo atual do modal de pagamento
+
     paymentItemsContainer.innerHTML = '';
 
-    // Adicionar os itens do carrinho ao modal de pagamento
+
     let total = 0;
     cart.forEach(item => {
         const itemTotal = item.price * item.quantity;
@@ -239,10 +252,10 @@ function openPaymentModal() {
         paymentItemsContainer.appendChild(paymentItem);
     });
 
-    // Atualizar o total no modal de pagamento
+
     paymentTotalElement.textContent = total.toFixed(2).replace('.', ',');
 
-    // Exibir o modal de pagamento
+
     paymentModal.style.display = 'block';
 }
 
@@ -252,8 +265,6 @@ function closePaymentModal() {
 }
 
 function proceedToPayment() {
-    showToast('Redirecionando para a página de pagamento...');
-    // Aqui você pode redirecionar para uma página de pagamento real
     closePaymentModal();
 }
 
@@ -262,8 +273,234 @@ function showToast(message) {
     toast.textContent = message;
     toast.className = 'toast show';
 
-    // Remover o toast após 3 segundos
+    // Garantir que a mensagem desapareça suavemente
     setTimeout(() => {
-        toast.className = 'toast';
-    }, 3000);
+        toast.classList.add('fade-out');
+        setTimeout(() => {
+            toast.className = 'toast'; // Remove a classe após a animação
+        }, 300); // Tempo da transição de fade-out
+    }, 3000); // Tempo de exibição da mensagem
 }
+
+const cartItems = [
+    { id: 1, name: 'Item 1', price: 10 },
+    { id: 2, name: 'Item 2', price: 20 },
+    { id: 3, name: 'Item 3', price: 30 },
+];
+
+function renderCart() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    cartItemsContainer.innerHTML = '';
+
+    cartItems.forEach(item => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${item.name} - R$${item.price}`;
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remover';
+        removeButton.className = 'remove-item';
+        removeButton.onclick = () => removeItem(item.id);
+
+        listItem.appendChild(removeButton);
+        cartItemsContainer.appendChild(listItem);
+    });
+}
+
+function removeItem(itemId) {
+    const itemIndex = cartItems.findIndex(item => item.id === itemId);
+    if (itemIndex !== -1) {
+        cartItems.splice(itemIndex, 1);
+        renderCart();
+    }
+}
+
+function updateCartUI() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotalElement = document.getElementById('cart-total');
+
+    // Limpar o conteúdo atual do carrinho
+    cartItemsContainer.innerHTML = '';
+
+    // Atualizar os itens do carrinho
+    let total = 0;
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        const cartItem = document.createElement('div');
+        cartItem.classList.add('cart-item');
+        cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-image" width="50">
+                    <div class="cart-item-details">
+                        <h4>${item.name}</h4>
+                        <p>Quantidade: ${item.quantity}</p>
+                        <p>Subtotal: R$ ${itemTotal.toFixed(2).replace('.', ',')}</p>
+                    </div>
+                    <button class="remove-item-btn" onclick="removeSingleItemFromCart('${item.name}')">Remover 1</button>
+                `;
+        cartItemsContainer.appendChild(cartItem);
+    });
+
+    // Atualizar o total do carrinho
+    cartTotalElement.textContent = total.toFixed(2).replace('.', ',');
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1); // Remove o item pelo índice
+    updateCartUI();
+    updateCartCount();
+}
+
+function openPrivacyModal() {
+    document.getElementById('privacy-modal').style.display = 'block';
+}
+
+function closePrivacyModal() {
+    document.getElementById('privacy-modal').style.display = 'none';
+}
+
+function openTermsModal() {
+    document.getElementById('terms-modal').style.display = 'block';
+}
+
+function closeTermsModal() {
+    document.getElementById('terms-modal').style.display = 'none';
+}
+
+function openAboutModal() {
+    document.getElementById('about-modal').style.display = 'block';
+}
+
+function closeAboutModal() {
+    document.getElementById('about-modal').style.display = 'none';
+}
+
+function openContactModal() {
+    document.getElementById('contact-modal').style.display = 'block';
+}
+
+function closeContactModal() {
+    document.getElementById('contact-modal').style.display = 'none';
+}
+
+// Fechar o modal ao clicar fora dele
+window.onclick = function (event) {
+    const aboutModal = document.getElementById('about-modal');
+    if (event.target == aboutModal) {
+        closeAboutModal();
+    }
+
+    const contactModal = document.getElementById('contact-modal');
+    if (event.target == contactModal) {
+        closeContactModal();
+    }
+
+    const privacyModal = document.getElementById('privacy-modal');
+    if (event.target == privacyModal) {
+        closePrivacyModal();
+    }
+
+    const termsModal = document.getElementById('terms-modal');
+    if (event.target == termsModal) {
+        closeTermsModal();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateCartDisplay();
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (!isLoggedIn) {
+        document.getElementById('login-modal').style.display = 'flex';
+    }
+});
+
+function handleLogin(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    // Aceitar qualquer email e senha
+    if (username && password) {
+        localStorage.setItem('isLoggedIn', true);
+        document.getElementById('login-modal').style.display = 'none';
+    } else {
+        alert('Por favor, preencha todos os campos!');
+    }
+}
+
+function skipLogin() {
+    localStorage.setItem('isLoggedIn', true);
+    document.getElementById('login-modal').style.display = 'none';
+}
+
+function showAdPopup() {
+    const adPopup = document.getElementById('ad-popup');
+    adPopup.style.display = 'block';
+}
+
+function closeAdPopup() {
+    const adPopup = document.getElementById('ad-popup');
+    adPopup.style.display = 'none';
+}
+
+// Exibir o popup de propaganda após 5 segundos
+setTimeout(showAdPopup, 5000);
+
+function applyCoupon() {
+    const couponCode = document.getElementById('coupon-code').value.trim();
+    const couponMessage = document.getElementById('coupon-message');
+
+    if (couponCode === 'DESCONTO10' || couponCode === 'teste') {
+        discount = 0.1; // 10% de desconto
+        couponMessage.textContent = 'Cupom aplicado com sucesso!';
+        couponMessage.style.color = 'green';
+        couponMessage.style.display = 'block';
+    } else if (couponCode) {
+        discount = 0;
+        couponMessage.textContent = 'Cupom inválido!';
+        couponMessage.style.color = 'red';
+        couponMessage.style.display = 'block';
+    } else {
+        couponMessage.style.display = 'none'; // Remove a mensagem se não houver cupom
+    }
+
+    updatePaymentTotal();
+}
+
+function updatePaymentTotal() {
+    const paymentTotalElement = document.getElementById('payment-total');
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const discountedTotal = total - total * discount;
+    paymentTotalElement.textContent = discountedTotal.toFixed(2).replace('.', ',');
+}
+
+function filterProducts() {
+    const searchInput = document.getElementById('search-input').value.toLowerCase();
+    const products = document.querySelectorAll('.product-card');
+
+    products.forEach(product => {
+        const productName = product.querySelector('h3').textContent.toLowerCase();
+        const productDescription = product.querySelector('.description').textContent.toLowerCase();
+
+        if (productName.includes(searchInput) || productDescription.includes(searchInput)) {
+            product.style.display = 'block';
+        } else {
+            product.style.display = 'none';
+        }
+    });
+}
+
+function toggleTheme() {
+    const body = document.body;
+    const themeToggle = document.getElementById('theme-toggle');
+
+    body.classList.toggle('light-theme');
+
+    if (body.classList.contains('light-theme')) {
+        themeToggle.textContent = '⚫'; // Símbolo para o tema claro
+    } else {
+        themeToggle.textContent = '⚪'; // Símbolo para o tema escuro
+    }
+}
+
+renderCart();
